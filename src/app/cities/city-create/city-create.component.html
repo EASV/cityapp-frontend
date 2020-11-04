@@ -1,0 +1,13 @@
+<h1>Create City</h1>
+<label>
+  Name:
+  <input type="text" [formControl]="name">
+</label>
+<label>
+  ZipCode:
+  <input type="number" [formControl]="zipCode">
+</label>
+<button (click)="save()"
+        [disabled]="creating">Save</button>
+
+<h1 *ngIf="errString" style="color: red">{{errString}}</h1>

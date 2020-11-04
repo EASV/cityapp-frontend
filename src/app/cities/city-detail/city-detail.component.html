@@ -1,0 +1,6 @@
+<div *ngIf="city$ | async as city">
+  <h1>{{city.name}}</h1>
+  <h2>{{city.zipCode}}</h2>
+</div>
+<button (click)="delete()">Delete</button>
+<p *ngIf="err" style="color: red">{{err.error}}</p>
