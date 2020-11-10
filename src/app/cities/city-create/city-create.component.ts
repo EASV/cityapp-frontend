@@ -15,9 +15,10 @@ export class CityCreateComponent implements OnInit {
   creating = false;
   cityJustCreated: City;
   errString: string = '';
-  constructor(private cityService: CityService) { }
+  constructor(private cityService: CityService) {}
 
   ngOnInit(): void {
+
   }
 
   save() {

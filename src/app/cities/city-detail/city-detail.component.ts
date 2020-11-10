@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CityService} from '../shared/city.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {catchError, first, take} from 'rxjs/operators';
+import {catchError, first, map, take} from 'rxjs/operators';
 import {Observable, Subscription} from 'rxjs';
 import {City} from '../shared/city.model';
 
@@ -14,12 +14,19 @@ export class CityDetailComponent implements OnInit, OnDestroy {
   id: number;
   city$: Observable<City>;
   err: any;
+  city: City;
+  private unsub: Subscription;
+  private unsub2: Subscription;
   constructor( private route: ActivatedRoute,
                private router: Router,
                private cityService: CityService) { }
 
 
   ngOnDestroy(): void {
+    this.unsub.unsubscribe();
+    if(this.unsub2) {
+      this.unsub2.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -28,9 +35,13 @@ export class CityDetailComponent implements OnInit, OnDestroy {
       .subscribe(
       params => {
         this.id = +params.get('id');
-        this.city$ = this.cityService.getCityById(this.id);
+        this.unsub = this.cityService.getCityById(this.id)
+          .subscribe(city => this.city = city);
       }
     )
+    this.unsub2 = this.cityService.getObservable().subscribe(r => {
+      console.log('response', r);
+    })
   }
 
   delete() {

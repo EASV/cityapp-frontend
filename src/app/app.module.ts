@@ -9,6 +9,8 @@ import { CityListComponent } from './cities/city-list/city-list.component';
 import { ToolbarComponent } from './shared/toolbar/toolbar.component';
 import { CityCreateComponent } from './cities/city-create/city-create.component';
 import { CityDetailComponent } from './cities/city-detail/city-detail.component';
+import { CityUpdateComponent } from './cities/city-update/city-update.component';
+import { AddressUpdateComponent } from './addresses/address-update/address-update.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { CityDetailComponent } from './cities/city-detail/city-detail.component'
     CityListComponent,
     ToolbarComponent,
     CityCreateComponent,
-    CityDetailComponent
+    CityDetailComponent,
+    CityUpdateComponent,
+    AddressUpdateComponent
   ],
   imports: [
     BrowserModule,
