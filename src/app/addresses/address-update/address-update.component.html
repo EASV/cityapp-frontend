@@ -1,0 +1,40 @@
+<h1>Update Address</h1>
+<div *ngIf="!errString" >
+  <div [formGroup]="addressUpdateForm" *ngIf="cities$ | async as cities else loading">
+    <label>
+      Id:
+      <input type="number" formControlName="id" readonly>
+    </label>
+    <label>
+      StreetName:
+      <input type="text" formControlName="streetName">
+    </label>
+    <label>
+      StreetNumber:
+      <input type="number" formControlName="streetNr">
+    </label>
+    <label>
+      Additional:
+      <input type="text" formControlName="additional">
+    </label>
+    <label>
+      City:
+      <select formControlName="cities" id="cities" >
+        <option *ngFor="let city of cities;"
+                [value]="city.zipCode"
+                [selected]="city.zipCode === address.cityId">
+          {{city.name}}
+        </option>
+      </select>
+    </label>
+
+
+    <button (click)="update()"
+            [disabled]="updating">Update</button>
+  </div>
+  <ng-template #loading>
+    <p>Loading Data... Please Wait...</p>
+  </ng-template>
+</div>
+
+<h4 *ngIf="errString">Oh no... An Error happened: <span style="color: red">{{errString}}</span></h4>

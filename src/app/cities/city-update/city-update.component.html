@@ -1,0 +1,20 @@
+<div [formGroup]="cityUpdateForm" *ngIf="cityToUpdate$ | async else loading">
+  <h1>Update City</h1>
+  <label>
+    Name:
+    <input type="text" formControlName="name">
+  </label>
+  <label>
+    ZipCode:
+    <input type="number" formControlName="zipCode">
+  </label>
+  <button (click)="update()"
+          [disabled]="updating">Update</button>
+
+  <h1 *ngIf="errString" style="color: red">{{errString}}</h1>
+
+
+</div>
+<ng-template #loading>
+  <p>Condition is false ...</p>
+</ng-template>
