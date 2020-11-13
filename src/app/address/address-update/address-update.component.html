@@ -1,6 +1,6 @@
 <h1>Update Address</h1>
 <div *ngIf="!errString" >
-  <div [formGroup]="addressUpdateForm" *ngIf="cities$ | async as cities else loading">
+  <div [formGroup]="addressUpdateForm" *ngIf="cities$ | async else loading">
     <label>
       Id:
       <input type="number" formControlName="id" readonly>
@@ -21,9 +21,8 @@
       City:
       <select formControlName="cities" id="cities" >
         <option *ngFor="let city of cities;"
-                [value]="city.zipCode"
-                [selected]="city.zipCode === address.cityId">
-          {{city.name}}
+                [value]="city.zipCode">
+          {{city.name}} - {{city.zipCode}}
         </option>
       </select>
     </label>
@@ -38,3 +37,5 @@
 </div>
 
 <h4 *ngIf="errString">Oh no... An Error happened: <span style="color: red">{{errString}}</span></h4>
+
+{{addressUpdateForm.value | json}}

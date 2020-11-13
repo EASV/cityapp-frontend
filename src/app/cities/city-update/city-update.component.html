@@ -1,4 +1,4 @@
-<div [formGroup]="cityUpdateForm" *ngIf="cityToUpdate$ | async else loading">
+<div [formGroup]="cityUpdateForm" *ngIf="!errString && updateObservable$ | async else loading">
   <h1>Update City</h1>
   <label>
     Name:
@@ -6,15 +6,24 @@
   </label>
   <label>
     ZipCode:
-    <input type="number" formControlName="zipCode">
+    <input type="number" formControlName="zipCode" readonly>
   </label>
+  <label>
+    City:
+    <select formControlName="countryIdAfter" id="cities" >
+      <option *ngFor="let country of countries"
+              [value]="country.id">
+        {{country.name}}
+      </option>
+    </select>
+  </label>
+
   <button (click)="update()"
           [disabled]="updating">Update</button>
 
-  <h1 *ngIf="errString" style="color: red">{{errString}}</h1>
-
-
+  <!-- {{cityUpdateForm.value | json}} -->
 </div>
-<ng-template #loading>
-  <p>Condition is false ...</p>
+<h5 *ngIf="errString" style="color: red">{{errString}}</h5>
+<ng-template *ngIf="!errString" #loading>
+  <p>I am Loading ...</p>
 </ng-template>

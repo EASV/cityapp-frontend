@@ -1,0 +1,11 @@
+<div *ngIf="!err && addresses$ | async as addresses else loading">
+  <h3 *ngFor="let address of addresses">
+    {{address.id}} {{address.streetName}} {{address.streetNr}} - {{address.cityId}}
+    <button routerLink="/address/update/{{address.id}}">Update</button>
+    <button routerLink="/address/delete/{{address.id}}">Delete</button>
+  </h3>
+</div>
+<p *ngIf="err">oh oh... {{err}}</p>
+<ng-template *ngIf="!err" #loading>
+  <p>Loading ...</p>
+</ng-template>

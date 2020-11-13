@@ -31,4 +31,8 @@ export class CityService {
   getObservable() : Observable<number> {
     return interval(2000);
   }
+
+  updateCity(updatedCity: City): Observable<City> {
+    return this.http.put<City>(this.citiesApiUrl + '/' + updatedCity, updatedCity);
+  }
 }

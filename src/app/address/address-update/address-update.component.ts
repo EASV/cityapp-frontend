@@ -15,10 +15,12 @@ import {catchError, switchMap, take, tap} from 'rxjs/operators';
 })
 export class AddressUpdateComponent implements OnInit {
   addressUpdateForm: FormGroup;
-  cities$: Observable<City[]>;
   updating: boolean;
+
   errString: string;
   address: Address;
+  cities: City[];
+  cities$: Observable<City[]>;
 
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
@@ -42,6 +44,9 @@ export class AddressUpdateComponent implements OnInit {
         switchMap( () => {
           return this.cityService.getCities()
         }),
+        tap(cities => {
+          this.cities = cities;
+        }),
         catchError( err => {
           if(err && err.error) {
             this.errString = err.error;
@@ -64,6 +69,25 @@ export class AddressUpdateComponent implements OnInit {
   }
 
   update() {
-    debugger
+    this.updating = true;
+    let addressUpdated = this.addressUpdateForm.value;
+    addressUpdated.cityId = this.addressUpdateForm.value.cities;
+    this.addressService.updateAddress(addressUpdated)
+      .pipe(
+        take(1),
+        catchError(err => {
+          if(err && err.error) {
+            this.errString = err.error;
+          }
+          if(err && err.message) {
+            this.errString = err.message;
+          }
+          return err;
+        })
+      )
+      .subscribe(address => {
+        debugger
+        this.router.navigateByUrl('cities');
+      });
   }
 }

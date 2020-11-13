@@ -10,7 +10,9 @@ import { ToolbarComponent } from './shared/toolbar/toolbar.component';
 import { CityCreateComponent } from './cities/city-create/city-create.component';
 import { CityDetailComponent } from './cities/city-detail/city-detail.component';
 import { CityUpdateComponent } from './cities/city-update/city-update.component';
-import { AddressUpdateComponent } from './addresses/address-update/address-update.component';
+import { AddressUpdateComponent } from './address/address-update/address-update.component';
+import { LandingPageComponent } from './home/landing-page/landing-page.component';
+import { AddressListComponent } from './address/address-list/address-list.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { AddressUpdateComponent } from './addresses/address-update/address-updat
     CityCreateComponent,
     CityDetailComponent,
     CityUpdateComponent,
-    AddressUpdateComponent
+    AddressUpdateComponent,
+    LandingPageComponent,
+    AddressListComponent
   ],
   imports: [
     BrowserModule,

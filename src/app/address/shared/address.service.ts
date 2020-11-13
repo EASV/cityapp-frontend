@@ -12,7 +12,15 @@ export class AddressService {
 
   constructor(private httpClient: HttpClient) { }
 
+  getAddresses(): Observable<Address[]> {
+    return this.httpClient.get<Address[]>(this.addressesApiUrl);
+  }
+
   getAddress(id: number): Observable<Address> {
     return this.httpClient.get<Address>(this.addressesApiUrl +'/' + id);
+  }
+
+  updateAddress(addressUpdated: Address): Observable<Address> {
+    return this.httpClient.put<Address>(this.addressesApiUrl  +'/' +addressUpdated.id, addressUpdated);
   }
 }
