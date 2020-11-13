@@ -1,3 +1,6 @@
 <h4 *ngFor="let city of cities$ | async">
-  {{city.name}} - {{city.zipCode}} <button routerLink="{{city.zipCode}}">Details</button> <button routerLink="update/{{city.zipCode}}">Update</button> <button (click)="delete(city)">Delete</button>
+  {{city.name}} - {{city.zipCode}} - {{city.countryId}}
+  <button routerLink="{{city.zipCode}}">Details</button>
+  <button routerLink="update/{{city.zipCode}}">Update</button>
+  <button (click)="delete(city)">Delete</button>
 </h4>

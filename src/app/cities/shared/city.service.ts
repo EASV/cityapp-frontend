@@ -33,6 +33,6 @@ export class CityService {
   }
 
   updateCity(updatedCity: City): Observable<City> {
-    return this.http.put<City>(this.citiesApiUrl + '/' + updatedCity, updatedCity);
+    return this.http.put<City>(this.citiesApiUrl + '/' + updatedCity.zipCode, updatedCity);
   }
 }

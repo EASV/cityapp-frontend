@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CityService} from '../shared/city.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {catchError, switchMap, take, tap} from 'rxjs/operators';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {City} from '../shared/city.model';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subscription} from 'rxjs';
 import {AddressService} from '../../address/shared/address.service';
 import {Address} from '../../address/shared/address.model';
 import {CountryService} from '../../country/shared/country.service';
@@ -22,6 +22,7 @@ export class CityUpdateComponent implements OnInit {
   errString: string;
   countries: Country[];
   err: any;
+  cityFound$: Observable<City>;
 
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
@@ -31,6 +32,12 @@ export class CityUpdateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.paramMap
+      .pipe(take(1))
+      .subscribe(params => {
+        let id = +params.get('id');
+        this.cityFound$ = this.cityService.getCityById(id);
+      })
     this.updateObservable$ = this.route.paramMap
       .pipe(
         take(1),

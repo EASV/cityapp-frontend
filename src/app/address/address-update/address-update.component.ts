@@ -86,8 +86,7 @@ export class AddressUpdateComponent implements OnInit {
         })
       )
       .subscribe(address => {
-        debugger
-        this.router.navigateByUrl('cities');
+        this.router.navigateByUrl('address');
       });
   }
 }
