@@ -14,20 +14,22 @@ import {FilteredList} from '../../shared/filtered-list.model';
 })
 export class CityListComponent implements OnInit {
   filterForm: FormGroup;
-  listData$: Observable<any>
+  listData$: Observable<FilteredList<City>>
   cities: City[];
   filter: Filter = {
     itemsPrPage: 5,
     currentPage: 1
   };
   count: number;
+  err: any;
   constructor(private cityService: CityService,
               private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.filterForm = this.fb.group({
       itemsPrPage: [''],
-      currentPage: ['']
+      currentPage: [''],
+      searchText: ['']
     })
     this.filterForm.patchValue(this.filter);
     this.getCities();
@@ -44,14 +46,15 @@ export class CityListComponent implements OnInit {
     if(filter.currentPage <= 0) {
       filter.currentPage = 1;
     }
+    if(filter.searchText) {
+      filter.searchField = "Name";
+    }
     this.listData$ = this.cityService.getCities(filter).pipe(
       tap(filteredList => {
         this.count = filteredList.totalCount;
         this.cities = filteredList.list;
       }),
-      catchError(err => {
-        return err;
-      })
+      catchError(this.err)
     );
   }
 

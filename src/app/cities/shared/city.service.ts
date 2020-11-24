@@ -20,9 +20,18 @@ export class CityService {
 
   // https://localhost:5001/api/cities?itemsPrPage=3&currentPage=1
   getCities(filter: Filter = undefined): Observable<FilteredList<City>> {
-    return this.http.get<FilteredList<City>>(this.citiesApiUrl
-      + '?itemsPrPage=' + filter.itemsPrPage
-      + '&currentPage=' + filter.currentPage);
+    let url = this.citiesApiUrl + '?';
+    if(filter && filter.itemsPrPage > 0 && filter.currentPage > 0) {
+      url = url
+        + 'itemsPrPage=' + filter.itemsPrPage
+        + '&currentPage=' + filter.currentPage + '&';
+    }
+    if(filter && filter.searchField?.length > 0 && filter.searchText?.length > 0) {
+      url = url
+        + 'searchField=' + filter.searchField
+        + '&searchText=' + filter.searchText;
+    }
+    return this.http.get<FilteredList<City>>(url);
   }
 
   getCityById(id: number): Observable<City> {
