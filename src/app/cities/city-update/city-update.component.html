@@ -1,4 +1,4 @@
-<div [formGroup]="cityUpdateForm" *ngIf="!errString && updateObservable$ | async else loading">
+<div [formGroup]="cityUpdateForm" *ngIf="!errString && updateObservable$ | async as countries else loading">
   <h1>Update City</h1>
   <label>
     Name:
@@ -17,9 +17,26 @@
       </option>
     </select>
   </label>
+  <br>
+  <br>
+  <br>
+  <label>
+    Tourists:
+    <select formControlName="touristIdsAfter" id="tourists" multiple style="width: 100%">
+      <option *ngFor="let tourist of tourists"
+              [value]="tourist.id">
+        {{tourist.name}}
+      </option>
+    </select>
+  </label>
+  <br>
+  <br>
+  <br>
 
   <button (click)="update()"
           [disabled]="updating">Update</button>
+
+  <button routerLink="/cities">back</button>
 
   <!-- {{cityUpdateForm.value | json}} -->
 </div>
@@ -27,3 +44,5 @@
 <ng-template #loading>
   <p>I am Loading ...</p>
 </ng-template>
+
+{{cityUpdateForm.value | json}}

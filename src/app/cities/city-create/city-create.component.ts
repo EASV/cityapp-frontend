@@ -27,7 +27,8 @@ export class CityCreateComponent implements OnInit {
     let zipCodeValue = this.zipCode.value;
     let city: City = {
       name: nameValue,
-      zipCode: zipCodeValue
+      zipCode: zipCodeValue,
+      tourists: []
     }
     this.cityService.createCity(city)
       .pipe(

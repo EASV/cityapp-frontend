@@ -1,6 +1,7 @@
 <div *ngIf="city$ | async as city else loading">
   <h1>{{city.name}}</h1>
   <h2>{{city.zipCode}}</h2>
+  <h3>{{city.tourists | json}}</h3>
   <h5>Cheese</h5>
 </div>
 <button (click)="delete()">Delete</button>

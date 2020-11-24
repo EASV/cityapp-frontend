@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
 import {City} from '../shared/city.model';
 import {CityService} from '../shared/city.service';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError, switchMap, tap} from 'rxjs/operators';
+import {Filter} from '../../shared/filter.model';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {FilteredList} from '../../shared/filtered-list.model';
 
 @Component({
   selector: 'app-city-list',
@@ -10,17 +13,52 @@ import {catchError, switchMap} from 'rxjs/operators';
   styleUrls: ['./city-list.component.scss']
 })
 export class CityListComponent implements OnInit {
-  cities$: Observable<City[]>
-  constructor(private cityService: CityService) { }
+  filterForm: FormGroup;
+  listData$: Observable<any>
+  cities: City[];
+  filter: Filter = {
+    itemsPrPage: 5,
+    currentPage: 1
+  };
+  count: number;
+  constructor(private cityService: CityService,
+              private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.cities$ = this.cityService.getCities();
+    this.filterForm = this.fb.group({
+      itemsPrPage: [''],
+      currentPage: ['']
+    })
+    this.filterForm.patchValue(this.filter);
+    this.getCities();
+    this.filterForm.valueChanges.subscribe(() => {
+      this.getCities();
+    });
+  }
+
+  getCities(currentPage: number = 0) {
+    if(currentPage > 0) {
+      this.filterForm.patchValue({currentPage: currentPage});
+    }
+    let filter = this.filterForm.value as Filter;
+    if(filter.currentPage <= 0) {
+      filter.currentPage = 1;
+    }
+    this.listData$ = this.cityService.getCities(filter).pipe(
+      tap(filteredList => {
+        this.count = filteredList.totalCount;
+        this.cities = filteredList.list;
+      }),
+      catchError(err => {
+        return err;
+      })
+    );
   }
 
   delete(city: City) {
     this.cityService.delete(city.zipCode)
       .pipe(
-        switchMap(c => this.cities$ = this.cityService.getCities()),
+        tap(() => this.getCities()),
         catchError(err => {
           return err;
         })
@@ -31,4 +69,8 @@ export class CityListComponent implements OnInit {
       }
     );*/
   }
+  get itemsPrPage(): number { return (this.filterForm.value as Filter).itemsPrPage; }
+  get currentPage(): number { return (this.filterForm.value as Filter).currentPage; }
+  get maxPages(): number { return Math.ceil(this.count / this.itemsPrPage); }
+
 }

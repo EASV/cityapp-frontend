@@ -6,7 +6,7 @@ import {AddressService} from '../shared/address.service';
 import {Observable, of} from 'rxjs';
 import {City} from '../../cities/shared/city.model';
 import {Address} from '../shared/address.model';
-import {catchError, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-address-update',
@@ -44,8 +44,9 @@ export class AddressUpdateComponent implements OnInit {
         switchMap( () => {
           return this.cityService.getCities()
         }),
-        tap(cities => {
-          this.cities = cities;
+        map(cities => {
+          this.cities = cities.list;
+          return cities.list;
         }),
         catchError( err => {
           if(err && err.error) {

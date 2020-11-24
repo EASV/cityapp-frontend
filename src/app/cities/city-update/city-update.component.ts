@@ -1,14 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CityService} from '../shared/city.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {catchError, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {City} from '../shared/city.model';
-import {Observable, of, Subscription} from 'rxjs';
-import {AddressService} from '../../address/shared/address.service';
-import {Address} from '../../address/shared/address.model';
+import {Observable, of} from 'rxjs';
 import {CountryService} from '../../country/shared/country.service';
 import {Country} from '../../country/shared/country.model';
+import {TouristService} from '../../tourist/shared/tourist.service';
+import {Tourist} from '../../tourist/shared/tourist.model';
 
 @Component({
   selector: 'app-city-update',
@@ -20,24 +19,18 @@ export class CityUpdateComponent implements OnInit {
   updateObservable$: Observable<Country[]>;
   updating: boolean;
   errString: string;
-  countries: Country[];
   err: any;
-  cityFound$: Observable<City>;
+  tourists: Tourist[];
 
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
               private cityService: CityService,
-              private countryService: CountryService) {
+              private countryService: CountryService,
+              private touristService: TouristService) {
   }
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(take(1))
-      .subscribe(params => {
-        let id = +params.get('id');
-        this.cityFound$ = this.cityService.getCityById(id);
-      })
     this.updateObservable$ = this.route.paramMap
       .pipe(
         take(1),
@@ -54,18 +47,29 @@ export class CityUpdateComponent implements OnInit {
           this.cityUpdateForm.patchValue({
             countryIdAfter: city.countryId
           });
+          this.cityUpdateForm.patchValue({
+            touristIdsAfter:  city.tourists?.map(tv => tv.touristId)
+          })
+          /*let torusitIdArray = [];
+          for(let i; i <city.tourists.length; i++) {
+            torusitIdArray.push(city.tourists[i].touristId);
+          }
+          city.tourists.forEach(tourist => torusitIdArray.push(tourist.touristId));
+            */
+
+        }),
+        switchMap(() => {
+          //Get All Countries from Backend
+          return this.touristService.getAll();
+        }),
+        tap(tourists => {
+          this.tourists = tourists;
         }),
         switchMap(() => {
           //Get All Countries from Backend
           return this.countryService.getCountries();
         }),
-        tap(countries => {
-          this.countries = countries;
-        }),
-        catchError(err => {
-          this.errString = err.error ?? err.message;
-          return of([]);
-        })
+        catchError(this.err)
       )
 
     this.cityUpdateForm = this.fb.group({
@@ -73,6 +77,7 @@ export class CityUpdateComponent implements OnInit {
       name: [''],
       countryId: [''],
       countryIdAfter: [''],
+      touristIdsAfter: [[]]
     });
 
   }
@@ -81,6 +86,21 @@ export class CityUpdateComponent implements OnInit {
     this.errString = '';
     let updatedCity = this.cityUpdateForm.value;
     updatedCity.countryId = updatedCity.countryIdAfter;
+    /*updatedCity.tourists = [];
+    for (let i = 0; i <  updatedCity.touristIdsAfter.length; i++) {
+      updatedCity.tourists.push({
+        cityId: updatedCity.zipCode,
+        touristId: updatedCity.touristIdsAfter[i],
+        visitDate: new Date()
+      })
+    }*/
+    updatedCity.tourists = updatedCity.touristIdsAfter.map(id => {
+      return {
+        cityId: updatedCity.zipCode,
+        touristId: id,
+        visitDate: new Date()
+      }
+    });
     this.cityService.updateCity(updatedCity)
       .pipe(
         catchError(err => {

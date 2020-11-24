@@ -3,6 +3,8 @@ import {City} from './city.model';
 import {HttpClient} from '@angular/common/http';
 import {interval, Observable, of} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import {Filter} from '../../shared/filter.model';
+import {FilteredList} from '../../shared/filtered-list.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +18,11 @@ export class CityService {
     return this.http.post<City>(this.citiesApiUrl, city);
   }
 
-  getCities(): Observable<City[]> {
-    return this.http.get<City[]>(this.citiesApiUrl);
+  // https://localhost:5001/api/cities?itemsPrPage=3&currentPage=1
+  getCities(filter: Filter = undefined): Observable<FilteredList<City>> {
+    return this.http.get<FilteredList<City>>(this.citiesApiUrl
+      + '?itemsPrPage=' + filter.itemsPrPage
+      + '&currentPage=' + filter.currentPage);
   }
 
   getCityById(id: number): Observable<City> {
@@ -26,10 +31,6 @@ export class CityService {
 
   delete(zipCode: number): Observable<City> {
     return this.http.delete<City>(this.citiesApiUrl + '/' + zipCode);
-  }
-
-  getObservable() : Observable<number> {
-    return interval(2000);
   }
 
   updateCity(updatedCity: City): Observable<City> {

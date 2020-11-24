@@ -1,6 +1,50 @@
-<h4 *ngFor="let city of cities$ | async">
-  {{city.name}} - {{city.zipCode}} - {{city.countryId}}
-  <button routerLink="{{city.zipCode}}">Details</button>
-  <button routerLink="update/{{city.zipCode}}">Update</button>
-  <button (click)="delete(city)">Delete</button>
-</h4>
+<div *ngIf="listData$ | async">
+  <h4 *ngFor="let city of cities">
+    {{city.name}} - {{city.zipCode}} - {{city.countryId}}
+    <button routerLink="{{city.zipCode}}">Details</button>
+    <button routerLink="update/{{city.zipCode}}">Update</button>
+    <button (click)="delete(city)">Delete</button>
+  </h4>
+  <div class="one-liner">
+    <div *ngIf="1 < currentPage">
+      <button (click)="getCities(1)">{{1}}</button>
+    </div>
+    <div *ngIf="2 < currentPage">
+      <button (click)="getCities(2)">{{2}}</button>
+    </div>
+    <div *ngIf="3 < currentPage">
+      <button (click)="getCities(3)">{{3}}</button>
+    </div>
+    <div *ngIf="currentPage > 1">
+      <button (click)="getCities(currentPage - 1)">Previous</button>
+    </div>
+    <div style="font-weight: bold; margin-left: 10px; margin-right: 10px">{{currentPage}}</div>
+    <div *ngIf="currentPage < maxPages">
+      <button (click)="getCities(currentPage + 1)">Next</button>
+    </div>
+    <div *ngIf="maxPages - 2> currentPage">
+      <button (click)="getCities(maxPages - 2)">{{maxPages - 2}}</button>
+    </div>
+    <div *ngIf="maxPages - 1 > currentPage">
+      <button (click)="getCities(maxPages - 1)">{{maxPages - 1}}</button>
+    </div>
+    <div *ngIf="maxPages > currentPage">
+      <button (click)="getCities(maxPages)">{{maxPages}}</button>
+    </div>
+  </div>
+  <div>Showing page {{currentPage}} of {{maxPages}}</div>
+  <div [formGroup]="filterForm">
+    <label>
+      ItemsPrPage:
+      <select formControlName="itemsPrPage" id="itemsPrPage" >
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+
+
